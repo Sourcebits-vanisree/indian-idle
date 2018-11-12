@@ -1,0 +1,77 @@
+body{
+	background-size: cover !important;
+	background-repeat: no-repeat !important;
+	background-attachment: fixed !important;
+	scroll-behavior: [ auto | smooth ];
+}
+#home-contestent-img{
+	padding-top: 40%;	
+}
+#home-contestent-img img{
+	width: 50%;
+}
+#bottom-menu{
+	padding-top:16%;
+	margin: 0 5px;
+}
+#menu1 img,#menu2 img,#menu3 img{
+	width: 100%;
+}
+.contestants-img img{
+	width: 80%;
+	/*cursor: pointer;*/
+}
+.modal-transparent{
+	opacity: 0.9;
+	background-color: #87add6;
+	min-height: 97vh;
+}
+.voteContestantImg img{
+	width: 100%;
+}
+.popup-name {
+	color: #fff;
+	font-size: 26px;
+	font-weight: 600;
+}
+#vote-to-contestant .modal-header{
+	border: none !important;
+	padding: 5px 15px !important;
+}
+#vote-to-contestant button {
+	color: #fff;
+	opacity: 1 !important;
+	font-size: 36px;
+	float: left !important;
+}
+.vote-btn{
+	background-color:yellow;
+	font-size: 20px;
+	padding: 6px 6px 6px 46px;
+	margin: 0px 51px;
+	border-radius: 6px;
+}
+.vote-check{
+	padding: 11px;
+	background: rgba(0, 0, 0, 0.2);
+	color: #231818;
+	margin-left: -49px;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+    font-size: 33px;
+}
+.vote-text{
+	padding: 0px 20px;
+}
+.contestant-votes{
+	background-color: #d62374;
+    padding: 4px 10px;
+    border-radius: 50px;
+    position: absolute;
+    left: 10px;
+}
+.backBtn{
+	left: 12px;
+    position: absolute;
+    top: 14px;
+}

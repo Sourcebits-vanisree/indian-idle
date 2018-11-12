@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Vote</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+  <div class="container">
+   <div class="row" >
+    <div class="backBtn"><a href="home.html"><img src="../images/back.png"></a></div>
+    <div class="col-sm-12 col-xs-12 text-center" id="headText"></div>
+    <div class="col-sm-12 col-xs-12 text-center" id="contestants"></div>
+  </div>
+</div>  
+<!-- The Modal -->
+<div class="modal" id="vote-to-contestant">
+  <div class="modal-dialog">
+    <div class="modal-content modal-transparent">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12 col-xs-12 text-center voteContestantImg"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>  
+<script>
+  var voteText = '';
+  $.getJSON( "../config/data.json")
+  .done(function( json ) {
+  	$("body").css("background", "url("+ json.vote.backgroundImage +")");
+    $('#headText').html(json.vote.headText);
+    $('#headText').css({"color":json.vote.color,"font-size":json.vote.font});
+    $('#contestants').css({"color":json.vote.color,"font-size":json.vote.font});
+    for (var i=0; i<json.vote.contestants.length; i++){ 
+      var cid = "cid"+json.vote.contestants[i].cid;
+      var contestantVotes = '';
+      if(sessionStorage.getItem(cid) !== "0"){
+        contestantVotes = "<span class='contestant-votes'>"+ sessionStorage.getItem(cid) +"</span>";
+      }
+
+      $('#contestants').append("<div class='col-sm-4 col-xs-6 contestants-img text-center'><span data-cid='"+ json.vote.contestants[i].cid +"'>"+ contestantVotes +"</span><img src="+ json.vote.contestants[i].image +"><div class='text-center contenstantName'>"+json.vote.contestants[i].name+"</div></div>");
+    }
+    voteText = json.vote.voteText;
+  })
+  .fail(function( jqxhr, textStatus, error ) {
+    var err = textStatus + ", " + error;
+    console.log( "Request Failed: " + err );
+  });
+
+  $(document).ready(function(){
+    //Voting confirmation popup
+    $(".contestants-img").click(function(){
+      var imgUrl = $(this).children('img').attr('src');
+      var name = $(this).find('.contenstantName').text();
+      var cid = $(this).children().attr('data-cid');
+      $('.voteContestantImg').html('');
+      $('.voteContestantImg').append("<img src='"+ imgUrl +"'><div class='popup-name'>"+ name +"</div><br/><div class='vote-btn' onclick='voteApiCall("+cid+")'><span class='vote-check'>&#10003;</span><span class='vote-text'>&nbsp;"+voteText+"</span></div");
+      $('#vote-to-contestant').modal('show'); 
+    });
+  });
+  function voteApiCall(contestantId)
+  {
+    var cid = "cid"+contestantId;
+    $('#vote-to-contestant').modal('hide');
+    if(votes = sessionStorage.getItem(cid)){
+      sessionStorage.setItem(cid, (parseInt(votes, 10) + 1));
+      contestantVotes = "<span class='contestant-votes'>"+ (parseInt(votes, 10) + 1) +"</span>";
+      $('span[data-cid="'+ contestantId +'"]').html(contestantVotes);
+    }
+    //Api call 
+  //   var data = {"userProfileId" : localStorage.getItem("userId") ,
+  //   "contestantId" : contestantId,
+  //   "mobileTime" : Date.now(),
+  //   "voteEpisodeId" : 1
+  // };
+
+  // $.ajax({
+  //  type: "POST",
+  //  url: "http://13.232.78.161:8070/api/v1/vote/voteForContestant",
+  //            data: JSON.stringify(data),// now data come in this function
+  //            contentType: "application/json; charset=utf-8",
+  //            crossDomain: true,
+  //            dataType: "json",
+  //            success: function (data, status, jqXHR) {
+
+  //              console.log("success");
+  //            },
+
+  //            error: function (jqXHR, status) {
+  //                // error handler
+  //                console.log(jqXHR);
+  //                console.log('fail' + status.code);
+  //              }
+  //            });
+  $('#vote-to-contestant').modal('hide'); 
+}
+</script>
+</body>
+</html>
