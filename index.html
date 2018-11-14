@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Home</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+</head>
+<body>
+
+  <div class="container">
+   <div class="row">
+     <div class="col-md-12 col-sm-12 text-center" id="home-contestent-img">
+     </div>
+     <div class="row" id="bottom-menu">
+      <div class='col-sm-4 col-xs-4 text-center' id="menu1"></div>
+      <div class='col-sm-4 col-xs-4 text-center' id="menu2"></div>
+      <div class='col-sm-4 col-xs-4 text-center' id="menu3"></div>
+    </div>
+  </div>     
+</div>
+<script>
+  var api_url = '';
+  var voteEpisodeId = '';
+  var totalUserVotes = 0;
+  var userID = location.search.split('userID=').splice(1).join('').split('&')[0];
+  var FullName = location.search.split('FullName=').splice(1).join('').split('&')[0];
+  if(localStorage.getItem("userId") == null || localStorage.getItem("userId") == ""){
+    localStorage.setItem("userId", userID);
+    localStorage.setItem("FullName", FullName);
+  } 
+
+
+  
+
+  $.getJSON( "config/data.json" )
+  .done(function( json ) {
+   $("body").css("background", "url("+ json.home.backgroubdImage +")");
+   $('#home-contestent-img').html("<a href='vote.html'><img src="+ json.home.heroImage +"></a>");
+   $('#menu1').html("<a href='#'><img src="+ json.home.menu1 +"></a>");
+   $('#menu2').html("<a href='#'><img src="+ json.home.menu2 +"></a>");
+   $('#menu3').html("<a href='#'><img src="+ json.home.menu3 +"></a>");
+   voteEpisodeId = json.vote.voteEpisodeId;
+
+   /* Reset all sessions */
+   var contestantsList = json.vote.contestants;
+   for (var i=0; i<contestantsList.length; i++){
+      sessionStorage.setItem("cid"+contestantsList[i].cid, 0);
+   }
+ })
+  .fail(function( jqxhr, textStatus, error ) {
+    var err = textStatus + ", " + error;
+    console.log( "Request Failed: " + err );
+  });
+
+  /* getting config data */
+
+  $.getJSON( "config.json")
+  .done(function( json ) {
+    api_url = json;
+    var userData = {
+      "userId":  localStorage.getItem("userId"),
+      "voteEpisodeId": voteEpisodeId
+    }
+    $.ajax({
+     crossDomain: true,
+     type: "POST",
+     url: api_url.votePerUserForContestants,
+     data: JSON.stringify(userData),
+     contentType: 'application/json; charset=utf-8',
+     dataType: 'json',
+     async: false,
+     success: function (data) {
+      console.log(data);
+      for(i=0;i<data.responseData.length;i++){
+        totalUserVotes += parseInt(data.responseData[i].votes);
+        sessionStorage.setItem("cid"+data.responseData[i].contestantId, data.responseData[i].votes);
+      }
+      localStorage.setItem("totalUserVotes",totalUserVotes);
+    },
+    error: function (jqXHR, status) {
+       // error handler
+       console.log(jqXHR);
+       console.log('fail' + status.code);
+     }
+   });
+  })
+  .fail(function( jqxhr, textStatus, error ) {
+    var err = textStatus + ", " + error;
+    console.log( "Request Failed: " + err );
+  });
+  //Api call for voting count
+  var votingList = '';
+
+  
+
+
+</script>
+</body>
+</html>

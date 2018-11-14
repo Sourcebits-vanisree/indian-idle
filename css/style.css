@@ -47,21 +47,22 @@ body{
 .vote-btn{
 	background-color:yellow;
 	font-size: 20px;
-	padding: 6px 6px 6px 46px;
-	margin: 0px 51px;
+	padding: 6px;
 	border-radius: 6px;
+	    width: 248px;
+	    margin-left: 8%;
 }
 .vote-check{
 	padding: 11px;
 	background: rgba(0, 0, 0, 0.2);
 	color: #231818;
-	margin-left: -49px;
+	margin-left: -12%;
     border-top-left-radius: 6px;
     border-bottom-left-radius: 6px;
     font-size: 33px;
 }
 .vote-text{
-	padding: 0px 20px;
+	margin: 0px 31px;
 }
 .contestant-votes{
 	background-color: #d62374;
@@ -74,4 +75,11 @@ body{
 	left: 12px;
     position: absolute;
     top: 14px;
+    z-index: 1;
+}
+.availableVotes{
+	color: yellow;
+    font-size: 30px;
+    letter-spacing: 2px;
+    font-weight: 500;
 }

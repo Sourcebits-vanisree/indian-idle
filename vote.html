@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Vote</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+</head>
+<body>
+  <div class="container">
+   <div class="row" >
+    <div class="backBtn"><a href="index.html"><img src="images/back.png"></a></div>
+    <div class="col-sm-12 col-xs-12 text-center" id="headText"></div>
+    <div class="col-sm-12 col-xs-12 text-center" id="contestants"></div>
+    <div class="col-sm-12 col-xs-12 text-center" id="availableVotes"></div>
+  </div>
+</div>  
+<!-- Vote to contestants popup -->
+<div class="modal" id="vote-to-contestant">
+  <div class="modal-dialog">
+    <div class="modal-content modal-transparent">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12 col-xs-12 text-center voteContestantImg"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>  
+
+<!-- Votes not available message  -->
+  <div class="modal fade" id="votesNotAvailable" role="dialog">
+    <div class="modal-dialog" style="top: 28%;">
+      <div class="modal-content">
+        <div class="modal-header" style="border-bottom:none;">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+           <p>Votes not available</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  var json_data = '';
+  var voteText = '';
+  var api_url = '';
+  var voteEpisodeId = '';
+
+  $.getJSON( "config/data.json")
+  .done(function( json ) {debugger;
+ /* Vote close */
+  var currentDT = new Date();
+  var startTime = json.vote.startTime;
+  var startDT = new Date(startTime);
+
+  debugger;
+
+    json_data = json
+    $("body").css("background", "url("+ json.vote.backgroundImage +")");
+    $('#headText').html(json.vote.headText);
+    $('#headText').css({"color":json.vote.color,"font-size":json.vote.font});
+    $('#contestants').css({"color":json.vote.color,"font-size":json.vote.font});
+    for (var i=0; i<json.vote.contestants.length; i++){
+      var cid = "cid"+json.vote.contestants[i].cid;
+      var contestantVotes = '';
+      if(sessionStorage.getItem(cid) !== "0" && sessionStorage.getItem(cid) !== null){
+        contestantVotes = "<span class='contestant-votes'>"+ sessionStorage.getItem(cid) +"</span>";
+      }
+
+      $('#contestants').append("<div class='col-sm-4 col-xs-6 text-center contestants-img'><span data-cid='"+ json.vote.contestants[i].cid +"'>"+ contestantVotes +"</span><img src="+ json.vote.contestants[i].image +"><div class='text-center contenstantName'>"+json.vote.contestants[i].name+"</div></div>");
+    }
+    voteText = json.vote.voteText;
+    voteEpisodeId = json.vote.voteEpisodeId;
+  })
+  .fail(function( jqxhr, textStatus, error ) {
+    var err = textStatus + ", " + error;
+    console.log( "Request Failed: " + err );
+  });
+
+ /* getting config data */
+  $.getJSON( "config.json")
+  .done(function( json ) {
+    api_url = json;
+  })
+  .fail(function( jqxhr, textStatus, error ) {
+    var err = textStatus + ", " + error;
+    console.log( "Request Failed: " + err );
+  });
+
+  $(document).ready(function(){ 
+    //Voting confirmation popup
+    $(".container").on("click",'.contestants-img',function(){
+      var totalUserVotes = localStorage.getItem("totalUserVotes");
+     if(json_data.vote.maxVotes > parseInt(totalUserVotes)){
+      var imgUrl = $(this).children('img').attr('src');
+      var name = $(this).find('.contenstantName').text();
+      var cid = $(this).children().attr('data-cid');
+      $('.voteContestantImg').html('');
+      $('.voteContestantImg').append("<img src='"+ imgUrl +"'><div class='popup-name'>"+ name +"</div><br/><div class='vote-btn' onclick='voteApiCall("+cid+")'><span class='vote-check'>&#10003;</span><span class='vote-text'>&nbsp;"+voteText+"</span></div");
+      $('#vote-to-contestant').modal('show'); 
+    }else{
+      $('#votesNotAvailable').modal('show');
+    }
+  });
+
+    NumOfVotesLeft(true);
+    
+  });
+
+  function voteApiCall(contestantId)
+  {
+    //Api call 
+    var contestantData = {"userProfileId" : localStorage.getItem("userId") ,
+    "contestantId" : contestantId,
+    "mobileTime" : Date.now(),
+    "voteEpisodeId" : voteEpisodeId};
+
+    $.ajax({
+     crossDomain: true,
+     type: "POST",
+     url: api_url.voteForContestant,
+     data: JSON.stringify(contestantData),
+     contentType: 'application/json; charset=utf-8',
+     dataType: 'json',
+     async: false,
+     success: function (data) {
+       var cid = "cid"+contestantId;
+       var votes = 0;
+       $('#vote-to-contestant').modal('hide');
+       if(sessionStorage.getItem(cid)){
+        votes = sessionStorage.getItem(cid);
+      }
+      sessionStorage.setItem(cid, (parseInt(votes, 10) + 1));
+      contestantVotes = "<span class='contestant-votes'>"+ (parseInt(votes, 10) + 1) +"</span>";
+      $('span[data-cid="'+ contestantId +'"]').html(contestantVotes);
+      NumOfVotesLeft(false);
+    },
+    error: function (jqXHR, status) {
+       // error handler
+       console.log(jqXHR);
+       console.log('fail' + status.code);
+     }
+   });
+    $('#vote-to-contestant').modal('hide'); 
+  }
+
+  /* Number of votes available */
+  function NumOfVotesLeft(status){
+    if(json_data.vote.maxVotes){
+      var totalUserVotes = localStorage.getItem("totalUserVotes");
+      if(status){
+        var totalUserVotes = (parseInt(totalUserVotes, 10) + 1);
+        localStorage.setItem("totalUserVotes",totalUserVotes);
+      }
+
+      var maxVotes = json_data.vote.maxVotes;
+      if(maxVotes > totalUserVotes){
+        var availableVotes = maxVotes - totalUserVotes;
+        $("#availableVotes").html('');
+        $("#availableVotes").html("<span class='availableVotes'>Left "+ availableVotes +" Votes</span>");
+      }else{
+        $("#availableVotes").html("<span class='availableVotes'>Left 0 Votes</span>");
+      }
+    }
+  }
+</script>
+</body>
+</html>
