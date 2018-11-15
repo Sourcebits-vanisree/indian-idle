@@ -83,3 +83,36 @@ body{
     letter-spacing: 2px;
     font-weight: 500;
 }
+/*Leaderboard*/
+.scroll-toprankers {
+    height: calc(100vh - 200px);
+    background-color: rgba(0, 0, 0, 0.2) !important;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling:touch!important;
+}
+.leader-info .rank {
+    padding-left: 59px;
+
+}
+
+.leader-info img {
+    border-radius: 20px;
+    margin-right: 5px;
+    margin-left: 5px;
+    margin-top: 4px;
+}
+
+
+.leader-info .leader-image {
+    width: 40px;
+    height: 40px;
+}
+.font-color{
+	color: #f6fa00!important;
+}
+.verticle-center{
+	height:100px;  /* image height */
+	display: table-cell;
+    vertical-align: middle;
+}

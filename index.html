@@ -40,7 +40,7 @@
   .done(function( json ) {
    $("body").css("background", "url("+ json.home.backgroubdImage +")");
    $('#home-contestent-img').html("<a href='vote.html'><img src="+ json.home.heroImage +"></a>");
-   $('#menu1').html("<a href='#'><img src="+ json.home.menu1 +"></a>");
+   $('#menu1').html("<a href='leaderboard.html'><img src="+ json.home.menu1 +"></a>");
    $('#menu2').html("<a href='#'><img src="+ json.home.menu2 +"></a>");
    $('#menu3').html("<a href='#'><img src="+ json.home.menu3 +"></a>");
    voteEpisodeId = json.vote.voteEpisodeId;
