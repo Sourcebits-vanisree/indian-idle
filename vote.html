@@ -36,55 +36,74 @@
 </div>  
 
 <!-- Votes not available message  -->
-  <div class="modal fade" id="votesNotAvailable" role="dialog">
-    <div class="modal-dialog" style="top: 28%;">
-      <div class="modal-content">
-        <div class="modal-header" style="border-bottom:none;">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-           <p>Votes not available</p>
-        </div>
+<div class="modal fade" id="votesNotAvailable" role="dialog">
+  <div class="modal-dialog" style="top: 28%;">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom:none;">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <p>Votes not available</p>
       </div>
     </div>
   </div>
-
+</div>
 <script>
   var json_data = '';
   var voteText = '';
   var api_url = '';
   var voteEpisodeId = '';
+  var maxVotes;
 
   $.getJSON( "config/data.json")
-  .done(function( json ) {debugger;
- /* Vote close */
-  var currentDT = new Date();
-  var startTime = json.vote.startTime;
-  var startDT = new Date(startTime);
+  .done(function( json ) {
+   /* Vote close */
+   var localDT = new Date();
+   var localTime = localDT.getTime();
+   var serverDT = new Date(1542278942995);
+   var serverTime = serverDT.getTime();
+   var startDT = new Date(json.vote.startTime);
+   var endDT = new Date(json.vote.endTime);
+   var startTime = startDT.getTime();
+   var endTime = endDT.getTime();
+   var startDate = startDT.getFullYear()+'/'+startDT.getMonth()+'/'+startDT.getDate();
+   var localDate = localDT.getFullYear()+'/'+localDT.getMonth()+'/'+localDT.getDate();
+   var serverDate = serverDT.getFullYear()+'/'+serverDT.getMonth()+'/'+serverDT.getDate();
 
-  debugger;
+   /* Compare with server time */
+   // if (serverDate == localDate && localDate == startDate) {
+   //  var timeDiff = (serverTime - localTime)/1000;/* in secs */
+   //  if (startTime <= (localTime+timeDiff) && endTime >= (localTime+timeDiff)) {
+   //    window.location.href= 'vote.html';
+   //  }else{
+   //    window.location.href= 'waiting.html'
+   //  }
 
-    json_data = json
-    $("body").css("background", "url("+ json.vote.backgroundImage +")");
-    $('#headText').html(json.vote.headText);
-    $('#headText').css({"color":json.vote.color,"font-size":json.vote.font});
-    $('#contestants').css({"color":json.vote.color,"font-size":json.vote.font});
-    for (var i=0; i<json.vote.contestants.length; i++){
-      var cid = "cid"+json.vote.contestants[i].cid;
-      var contestantVotes = '';
-      if(sessionStorage.getItem(cid) !== "0" && sessionStorage.getItem(cid) !== null){
-        contestantVotes = "<span class='contestant-votes'>"+ sessionStorage.getItem(cid) +"</span>";
-      }
+   // }
+   
 
-      $('#contestants').append("<div class='col-sm-4 col-xs-6 text-center contestants-img'><span data-cid='"+ json.vote.contestants[i].cid +"'>"+ contestantVotes +"</span><img src="+ json.vote.contestants[i].image +"><div class='text-center contenstantName'>"+json.vote.contestants[i].name+"</div></div>");
+  json_data = json;
+  maxVotes = json_data.vote.maxVotes;
+  $("body").css("background", "url("+ json.vote.backgroundImage +")");
+  $('#headText').html(json.vote.headText);
+  $('#headText').css({"color":json.vote.color,"font-size":json.vote.font});
+  $('#contestants').css({"color":json.vote.color,"font-size":json.vote.font});
+  for (var i=0; i<json.vote.contestants.length; i++){
+    var cid = "cid"+json.vote.contestants[i].cid;
+    var contestantVotes = '';
+    if(sessionStorage.getItem(cid) !== "0" && sessionStorage.getItem(cid) !== null){
+      contestantVotes = "<span class='contestant-votes'>"+ sessionStorage.getItem(cid) +"</span>";
     }
-    voteText = json.vote.voteText;
-    voteEpisodeId = json.vote.voteEpisodeId;
-  })
+
+    $('#contestants').append("<div class='col-sm-4 col-xs-6 text-center contestants-img'><span data-cid='"+ json.vote.contestants[i].cid +"'>"+ contestantVotes +"</span><img src="+ json.vote.contestants[i].image +"><div class='text-center contenstantName'>"+json.vote.contestants[i].name+"</div></div>");
+  }
+  voteText = json.vote.voteText;
+  voteEpisodeId = json.vote.voteEpisodeId;
+})
   .fail(function( jqxhr, textStatus, error ) {
     var err = textStatus + ", " + error;
     console.log( "Request Failed: " + err );
   });
 
- /* getting config data */
+  /* getting config data */
   $.getJSON( "config.json")
   .done(function( json ) {
     api_url = json;
@@ -98,19 +117,19 @@
     //Voting confirmation popup
     $(".container").on("click",'.contestants-img',function(){
       var totalUserVotes = localStorage.getItem("totalUserVotes");
-     if(json_data.vote.maxVotes > parseInt(totalUserVotes)){
-      var imgUrl = $(this).children('img').attr('src');
-      var name = $(this).find('.contenstantName').text();
-      var cid = $(this).children().attr('data-cid');
-      $('.voteContestantImg').html('');
-      $('.voteContestantImg').append("<img src='"+ imgUrl +"'><div class='popup-name'>"+ name +"</div><br/><div class='vote-btn' onclick='voteApiCall("+cid+")'><span class='vote-check'>&#10003;</span><span class='vote-text'>&nbsp;"+voteText+"</span></div");
-      $('#vote-to-contestant').modal('show'); 
-    }else{
-      $('#votesNotAvailable').modal('show');
-    }
-  });
+      if(maxVotes > parseInt(totalUserVotes)){
+        var imgUrl = $(this).children('img').attr('src');
+        var name = $(this).find('.contenstantName').text();
+        var cid = $(this).children().attr('data-cid');
+        $('.voteContestantImg').html('');
+        $('.voteContestantImg').append("<img src='"+ imgUrl +"'><div class='popup-name'>"+ name +"</div><br/><div class='vote-btn' onclick='voteApiCall("+cid+")'><span class='vote-check'>&#10003;</span><span class='vote-text'>&nbsp;"+voteText+"</span></div");
+        $('#vote-to-contestant').modal('show'); 
+      }else{
+        $('#votesNotAvailable').modal('show');
+      }
+    });
 
-    NumOfVotesLeft(true);
+    NumOfVotesLeft(false);
     
   });
 
@@ -140,7 +159,7 @@
       sessionStorage.setItem(cid, (parseInt(votes, 10) + 1));
       contestantVotes = "<span class='contestant-votes'>"+ (parseInt(votes, 10) + 1) +"</span>";
       $('span[data-cid="'+ contestantId +'"]').html(contestantVotes);
-      NumOfVotesLeft(false);
+      NumOfVotesLeft(true);
     },
     error: function (jqXHR, status) {
        // error handler
@@ -153,14 +172,13 @@
 
   /* Number of votes available */
   function NumOfVotesLeft(status){
-    if(json_data.vote.maxVotes){
       var totalUserVotes = localStorage.getItem("totalUserVotes");
       if(status){
         var totalUserVotes = (parseInt(totalUserVotes, 10) + 1);
         localStorage.setItem("totalUserVotes",totalUserVotes);
       }
 
-      var maxVotes = json_data.vote.maxVotes;
+      // var maxVotes = json_data.vote.maxVotes;
       if(maxVotes > totalUserVotes){
         var availableVotes = maxVotes - totalUserVotes;
         $("#availableVotes").html('');
@@ -168,7 +186,6 @@
       }else{
         $("#availableVotes").html("<span class='availableVotes'>Left 0 Votes</span>");
       }
-    }
   }
 </script>
 </body>

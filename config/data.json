@@ -12,9 +12,9 @@
 		"font":"15px",
 		"color":"#fff",
 		"voteEpisodeId":"1",
-		"maxVotes":"80",
-		"startTime":"2018/11/14 09:00",
-		"endTime":"2018/14/11 10:00",
+		"maxVotes":"160",
+		"startTime":"2018/11/15 16:00",
+		"endTime":"2018/15/11 17:00",
 		"contestants":[{"cid":"0","name":"testing1","image":"https://s3.ap-south-1.amazonaws.com/qa-ems-app-data/sampledata/ankush.png"},
 		{"cid":"1","name":"testing2","image":"https://s3.ap-south-1.amazonaws.com/qa-ems-app-data/sampledata/kunal.png"},
 		{"cid":"2","name":"testing3","image":"https://s3.ap-south-1.amazonaws.com/qa-ems-app-data/sampledata/nilanjana.png"},
@@ -26,10 +26,10 @@
 		"voteText":"VOTE NOW"
 	},
 	"before-waiting-page":{
-
+		"backgroundImage":"https://s3.ap-south-1.amazonaws.com/qa-ems-app-data/sampledata/HOMEPAGE.png"
 	},
 	"after-waiting-page":{
-
+		"backgroundImage":"https://s3.ap-south-1.amazonaws.com/qa-ems-app-data/sampledata/HOMEPAGE.png"
 	}
 	
 }
