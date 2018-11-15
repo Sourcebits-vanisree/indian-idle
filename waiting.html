@@ -1,1 +1,29 @@
-<div style='font-size: 40px'>before waiting page</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Home</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+</head>
+<body>
+
+  <div class="container">
+   <div class="row text-center">
+    <div class="backBtn"><a href="index.html"><img src="images/back.png"></a></div>
+    <h1>Waiting page</h1>
+  </div>     
+</div>
+<script>
+  $.getJSON( "config/data.json")
+  .done(function( json ) {
+    $("body").css("background", "url("+ json.beforewaitingpage.backgroundImage +")");
+  })
+  .fail(function( jqxhr, textStatus, error ) {
+    var err = textStatus + ", " + error;
+    console.log( "Request Failed: " + err );
+  });
+</script>

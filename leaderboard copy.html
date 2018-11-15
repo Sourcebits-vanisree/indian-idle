@@ -13,7 +13,6 @@
 
 	<div class="container p-0">
 		<div class="row pt-4 mb-4 no-gutters">
-			<div class="backBtn"><a href="index.html"><img src="images/back.png"></a></div>
 			<div class="col-2"></div>
 			<div class="col-3" >
 				<div class="float-right"><img id="profilePicUrl" src="images/default-male-photo.png" width="100px" height="100px" class="rounded-circle" onerror="imgError(this);"></div>
@@ -30,10 +29,11 @@
 		<div class="scroll-toprankers no-gutters" id="leaders">
 		</div>   
 	</div>
-	<script src="js/config.js"></script>
+	
 	<script type="text/javascript">
 	var pagination =1;
     var lastPage =0;
+    var api_url = '';
 	$.getJSON( "config/data.json" )
 	.done(function( json ) {
 		$("body").css("background", "url("+ json.vote.backgroundImage +")");
@@ -42,10 +42,18 @@
 		var err = textStatus + ", " + error;
 		console.log( "Request Failed: " + err );
 	});
-	
+	/* getting config data */
+	$.getJSON( "config.json")
+	.done(function( json ) {
+		api_url = json;
+	})
+	.fail(function( jqxhr, textStatus, error ) {
+		var err = textStatus + ", " + error;
+		console.log( "Request Failed: " + err );
+	});
 	$(document).ready(function(){
 		var name = localStorage.getItem('name');
-		var userid = localStorage.getItem('userId');
+		var userid = localStorage.getItem('userID');
 		var getProfileDetails = api_url.get_Profile+userid+'.json?'+$.now();
 		$.getJSON(getProfileDetails,function(json){
 			if(json.name.length>=24){
@@ -104,7 +112,7 @@ function nextRanks(){
 	if (lastPage != pagination) {
 		pagination++;
 		var replaceString = "leader"+pagination+".json";
-		var nextUrl = api_url.top_Ranks.replace("leader.json",replaceString);
+		var nextUrl = Api.top_Ranks.replace("leader.json",replaceString);
 		nextUrl=nextUrl+"?"+$.now();
 		topRanks(nextUrl);
 	};

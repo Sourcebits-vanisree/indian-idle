@@ -83,6 +83,10 @@ body{
     letter-spacing: 2px;
     font-weight: 500;
 }
+.votesClose{
+	color: red;
+	font-size: 17px;
+}
 /*Leaderboard*/
 .scroll-toprankers {
     height: calc(100vh - 200px);

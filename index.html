@@ -22,74 +22,70 @@
     </div>
   </div>     
 </div>
+<script src="js/config.js"></script>
+<script src="config/data.js"></script>
 <script>
-  var api_url = '';
-  var voteEpisodeId = '';
+  // var voteEpisodeId = '';
   var totalUserVotes = 0;
   var userId = location.search.split('userID=').splice(1).join('').split('&')[0];
   var FullName = location.search.split('FullName=').splice(1).join('').split('&')[0];
 
   if (localStorage.getItem('userId') == "" || localStorage.getItem('userId')== "undefined" || localStorage.getItem('userId') == null) {
-       localStorage.removeItem('userId');
-       localStorage.setItem('userId', userId);
-   }
+   localStorage.removeItem('userId');
+   localStorage.setItem('userId', userId);
+ }
 
-  $.getJSON( "config/data.json" )
-  .done(function( json ) {
+ // $.getJSON( "config/data.json" )
+ // .done(function( json ) {
    $("body").css("background", "url("+ json.home.backgroubdImage +")");
    $('#home-contestent-img').html("<a href='vote.html'><img src="+ json.home.heroImage +"></a>");
    $('#menu1').html("<a href='leaderboard.html'><img src="+ json.home.menu1 +"></a>");
    $('#menu2').html("<a href='#'><img src="+ json.home.menu2 +"></a>");
    $('#menu3').html("<a href='#'><img src="+ json.home.menu3 +"></a>");
-   voteEpisodeId = json.vote.voteEpisodeId;
+   // voteEpisodeId = json.vote.voteEpisodeId;
 
    /* Reset all sessions */
    var contestantsList = json.vote.contestants;
    for (var i=0; i<contestantsList.length; i++){
-      sessionStorage.setItem("cid"+contestantsList[i].cid, 0);
-   }
- })
-  .fail(function( jqxhr, textStatus, error ) {
-    var err = textStatus + ", " + error;
-    console.log( "Request Failed: " + err );
-  });
+    sessionStorage.setItem("cid"+contestantsList[i].cid, 0);
+  }
+// })
+//  .fail(function( jqxhr, textStatus, error ) {
+//   var err = textStatus + ", " + error;
+//   console.log( "Request Failed: " + err );
+// });
+ var userData = {
+  "userId":  localStorage.getItem("userId"),
+  "voteEpisodeId": json.vote.voteEpisodeId
+}
 
-  /* getting config data */
-
-  $.getJSON( "config.json")
-  .done(function( json ) {
-    api_url = json;
-    var userData = {
-      "userId":  localStorage.getItem("userId"),
-      "voteEpisodeId": voteEpisodeId
-    }
-    $.ajax({
-     crossDomain: true,
-     type: "POST",
-     url: api_url.votePerUserForContestants,
-     data: JSON.stringify(userData),
-     contentType: 'application/json; charset=utf-8',
-     dataType: 'json',
-     async: false,
-     success: function (data) {
-      console.log(data);
-      for(i=0;i<data.responseData.length;i++){
-        totalUserVotes += parseInt(data.responseData[i].votes);
-        sessionStorage.setItem("cid"+data.responseData[i].contestantId, data.responseData[i].votes);
+$.ajax({
+ crossDomain: true,
+ type: "POST",
+ url: api_url.votePerUserForContestants,
+ data: JSON.stringify(userData),
+ contentType: 'application/json; charset=utf-8',
+ dataType: 'json',
+ async: false,
+ success: function (data) {
+  console.log(data);
+  
+  if(data.responseData){
+    var votersList = data.responseData.voteList;
+    var serverTime = data.responseData.serverTime
+   
+    if(votersList && serverTime){
+       localStorage.setItem("serverTime",data.responseData.serverTime);
+      for(i=0;i<votersList.length;i++){
+        totalUserVotes += parseInt(votersList[i].votes);
+        sessionStorage.setItem("cid"+votersList[i].contestantId, votersList[i].votes);
       }
-      localStorage.setItem("totalUserVotes",totalUserVotes);
-    },
-    error: function (jqXHR, status) {
-       // error handler
-       console.log(jqXHR);
-       console.log('fail' + status.code);
-     }
-   });
-  })
-  .fail(function( jqxhr, textStatus, error ) {
-    var err = textStatus + ", " + error;
-    console.log( "Request Failed: " + err );
-  });
+    }
+  }
+  localStorage.setItem("totalUserVotes",totalUserVotes);
+}
+})
+
   //Api call for voting count
   var votingList = '';
 
