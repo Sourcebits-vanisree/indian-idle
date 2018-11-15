@@ -26,15 +26,13 @@
   var api_url = '';
   var voteEpisodeId = '';
   var totalUserVotes = 0;
-  var userID = location.search.split('userID=').splice(1).join('').split('&')[0];
+  var userId = location.search.split('userID=').splice(1).join('').split('&')[0];
   var FullName = location.search.split('FullName=').splice(1).join('').split('&')[0];
-  if(localStorage.getItem("userId") == null || localStorage.getItem("userId") == ""){
-    localStorage.setItem("userId", userID);
-    localStorage.setItem("FullName", FullName);
-  } 
 
-
-  
+  if (localStorage.getItem('userId') == "" || localStorage.getItem('userId')== "undefined" || localStorage.getItem('userId') == null) {
+       localStorage.removeItem('userId');
+       localStorage.setItem('userId', userId);
+   }
 
   $.getJSON( "config/data.json" )
   .done(function( json ) {
@@ -94,9 +92,6 @@
   });
   //Api call for voting count
   var votingList = '';
-
-  
-
 
 </script>
 </body>
