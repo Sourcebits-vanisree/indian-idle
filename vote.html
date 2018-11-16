@@ -72,21 +72,40 @@
    var serverDate = serverDT.getFullYear()+'/'+serverDT.getMonth()+'/'+serverDT.getDate();
 
    /* Compare with server time */
-   var showTimeStatus = false;
+   var showTimeStatus = true;
    // var endTimeObj = new Date(endTime);
    // var startTimeObj = new Date(startTime);
-   // This will give difference in milliseconds
+   //This will give difference in milliseconds
    
    if (serverDate == localDate && localDate == startDate) {
     var timeDiff = (serverTime - localTime)/1000;/* in secs */
     if (startTime <= (localTime+timeDiff) && endTime >= (localTime+timeDiff)) {
-
       // Close time for vote
-      var difference = (endTime - startTime)/3600000;
-      $('#votesClose').html('<span class="votesClose">Vote closes in 00:30:50</span>');
+      debugger;
+      var msec = endTime - startTime;
+      // var mins = Math.floor(msec / 60000);
+      // var hrs = Math.floor(mins / 60);
+    //    var seconds = parseInt((msec / 1000) % 60);
+    // var minutes = parseInt((msec / (1000 * 60)) % 60);
+    // var hours = parseInt((msec / (1000 * 60 * 60)) % 24);
+
+      // var deadline = new Date(Date.parse(new Date()) + 15 * 24 * 60 * 60 * 1000);
+      // var endTimeSet = new Date();
+      // endTimeSet.setSeconds(seconds);
+      // endTimeSet.setMinutes(minutes);
+      // endTimeSet.setHours(hours);
+      initializeClock('clockdiv', endTime,startTime);
       showTimeStatus = true;
     }else{
-      window.location.href= 'waiting.html'
+      // if(startTime <= (localTime+timeDiff)){
+      //   window.location.href= 'beforeWaitingPage.html';
+      // }
+      if(endTime >= (localTime+timeDiff)){
+        window.location.href= 'beforeWaitingPage.html';
+      }else{
+        window.location.href= 'afterWaitingPage.html';
+      }
+      
     }
 
   }
@@ -117,6 +136,7 @@
 
 
 $(document).ready(function(){ 
+  NumOfVotesLeft(false);
     //Voting confirmation popup
     $(".container").on("click",'.contestants-img',function(){
       var totalUserVotes = localStorage.getItem("totalUserVotes");
@@ -131,8 +151,6 @@ $(document).ready(function(){
         $('#votesNotAvailable').modal('show');
       }
     });
-
-    NumOfVotesLeft(false);
     
   });
 
@@ -182,7 +200,7 @@ function voteApiCall(contestantId)
     }
 
       // var maxVotes = json_data.vote.maxVotes;
-      if(maxVotes > totalUserVotes){
+      if(maxVotes <= totalUserVotes){
         var availableVotes = maxVotes - totalUserVotes;
         $("#availableVotes").html('');
         $("#availableVotes").html("<span class='availableVotes'>Left "+ availableVotes +" Votes</span>");
@@ -190,6 +208,39 @@ function voteApiCall(contestantId)
         $("#availableVotes").html("<span class='availableVotes'>Left 0 Votes</span>");
       }
     }
+    //time counter
+    function getTimeRemaining(endtime,starttime) {
+      // var t = Date.parse(endtime) - Date.parse(starttime);
+       var t = Date.parse(endtime) - Date.parse(new Date(starttime));
+      var seconds = Math.floor((t / 1000) % 60);
+      var minutes = Math.floor((t / 1000 / 60) % 60);
+      var hours = Math.floor((t / (1000 * 60 * 60)) % 1);
+      return {
+        'total': t,
+        'hours': hours,
+        'minutes': minutes,
+        'seconds': seconds
+      };
+    }
+
+    function initializeClock(id, endtime,starttime) {
+
+      function updateClock() {
+        endtime = new Date(endtime);
+        endtime.setSeconds(endtime.getSeconds() - 1);
+        var t = getTimeRemaining(endtime,starttime);
+        var counterDisplay = ('0' + t.hours).slice(-2) +':'+ ('0' + t.minutes).slice(-2) +':'+ ('0' + t.seconds).slice(-2)
+        $("#votesClose").html('<span class="votesClose">Vote closes in '+ counterDisplay +'</span>');
+
+        if (t.total <= 0) {
+          clearInterval(timeinterval);
+        }
+      }
+
+      updateClock();
+      var timeinterval = setInterval(updateClock, 1000);
+    }
+
   </script>
 </body>
 </html>
