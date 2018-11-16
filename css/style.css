@@ -5,7 +5,7 @@ body{
 	scroll-behavior: [ auto | smooth ];
 }
 #home-contestent-img{
-	padding-top: 40%;	
+	    padding-top: 45%;
 }
 #home-contestent-img img{
 	width: 50%;
@@ -119,4 +119,7 @@ body{
 	height:100px;  /* image height */
 	display: table-cell;
     vertical-align: middle;
+}
+.menu-buttons img{
+	width:100%;
 }

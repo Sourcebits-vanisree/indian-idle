@@ -63,6 +63,8 @@
 });
 function topRanks(toprankers_url){
 	$.getJSON(toprankers_url,function(json){
+		//debugger;
+		
 		var jsonCount = Object.keys(json).length;
 		if (jsonCount < 50 && jsonCount > 0) {
 			lastPage = pagination;
@@ -70,7 +72,10 @@ function topRanks(toprankers_url){
 		$('.load-more').remove();
 //alert(ranks_per_page);
 var itemC=(pagination-1)*50;
+console.log(json);
 $.each(json, function(i, result) {
+result=$.parseJSON(result[0]);
+
 // result=result[0];
 if(result.profilePicUrl==undefined || result.profilePicUrl==""){
 	result.profilePicUrl="images/default-male-photo.png";

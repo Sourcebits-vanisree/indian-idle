@@ -72,34 +72,15 @@
    var serverDate = serverDT.getFullYear()+'/'+serverDT.getMonth()+'/'+serverDT.getDate();
 
    /* Compare with server time */
-   var showTimeStatus = true;
-   // var endTimeObj = new Date(endTime);
-   // var startTimeObj = new Date(startTime);
-   //This will give difference in milliseconds
+   var showTimeStatus = false;
    
    if (serverDate == localDate && localDate == startDate) {
     var timeDiff = (serverTime - localTime)/1000;/* in secs */
     if (startTime <= (localTime+timeDiff) && endTime >= (localTime+timeDiff)) {
       // Close time for vote
-      debugger;
-      var msec = endTime - startTime;
-      // var mins = Math.floor(msec / 60000);
-      // var hrs = Math.floor(mins / 60);
-    //    var seconds = parseInt((msec / 1000) % 60);
-    // var minutes = parseInt((msec / (1000 * 60)) % 60);
-    // var hours = parseInt((msec / (1000 * 60 * 60)) % 24);
-
-      // var deadline = new Date(Date.parse(new Date()) + 15 * 24 * 60 * 60 * 1000);
-      // var endTimeSet = new Date();
-      // endTimeSet.setSeconds(seconds);
-      // endTimeSet.setMinutes(minutes);
-      // endTimeSet.setHours(hours);
-      initializeClock('clockdiv', endTime,startTime);
+      initializeClock('clockdiv', endTime,serverTime);
       showTimeStatus = true;
     }else{
-      // if(startTime <= (localTime+timeDiff)){
-      //   window.location.href= 'beforeWaitingPage.html';
-      // }
       if(endTime >= (localTime+timeDiff)){
         window.location.href= 'beforeWaitingPage.html';
       }else{
@@ -109,10 +90,17 @@
     }
 
   }
+  else{
+    if(startTime > serverTime){
+       // window.location.href= 'beforeWaitingPage.html';
+     }else{
+      // window.location.href= 'afterWaitingPage.html';
+     }
+  }
 
   json_data = json;
   maxVotes = json_data.vote.maxVotes;
-  $("body").css("background", "url("+ json.vote.backgroundImage +")");
+  $("body").css("background", "url("+ json.vote.backgroubdImage +")");
   $('#headText').html(json.vote.headText);
   $('#headText').css({"color":json.vote.color,"font-size":json.vote.font});
   $('#contestants').css({"color":json.vote.color,"font-size":json.vote.font});
@@ -127,13 +115,6 @@
   }
   voteText = json.vote.voteText;
   voteEpisodeId = json.vote.voteEpisodeId;
-
-// })
-//   .fail(function( jqxhr, textStatus, error ) {
-//     var err = textStatus + ", " + error;
-//     console.log( "Request Failed: " + err );
-//   });
-
 
 $(document).ready(function(){ 
   NumOfVotesLeft(false);
@@ -194,27 +175,23 @@ function voteApiCall(contestantId)
   /* Number of votes available */
   function NumOfVotesLeft(status){
     var totalUserVotes = localStorage.getItem("totalUserVotes");
-    if(status){
+    if(status === true){
       var totalUserVotes = (parseInt(totalUserVotes, 10) + 1);
       localStorage.setItem("totalUserVotes",totalUserVotes);
     }
 
-      // var maxVotes = json_data.vote.maxVotes;
-      if(maxVotes <= totalUserVotes){
+      if(maxVotes >= totalUserVotes){
         var availableVotes = maxVotes - totalUserVotes;
         $("#availableVotes").html('');
         $("#availableVotes").html("<span class='availableVotes'>Left "+ availableVotes +" Votes</span>");
-      }else{
-        $("#availableVotes").html("<span class='availableVotes'>Left 0 Votes</span>");
       }
     }
     //time counter
     function getTimeRemaining(endtime,starttime) {
-      // var t = Date.parse(endtime) - Date.parse(starttime);
        var t = Date.parse(endtime) - Date.parse(new Date(starttime));
       var seconds = Math.floor((t / 1000) % 60);
       var minutes = Math.floor((t / 1000 / 60) % 60);
-      var hours = Math.floor((t / (1000 * 60 * 60)) % 1);
+      var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
       return {
         'total': t,
         'hours': hours,
@@ -233,7 +210,7 @@ function voteApiCall(contestantId)
         $("#votesClose").html('<span class="votesClose">Vote closes in '+ counterDisplay +'</span>');
 
         if (t.total <= 0) {
-          clearInterval(timeinterval);
+          window.location.href= 'afterWaitingPage.html';
         }
       }
 

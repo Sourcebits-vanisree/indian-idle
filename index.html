@@ -16,9 +16,9 @@
      <div class="col-md-12 col-sm-12 text-center" id="home-contestent-img">
      </div>
      <div class="row" id="bottom-menu">
-      <div class='col-sm-4 col-xs-4 text-center' id="menu1"></div>
+      <!-- <div class='col-sm-4 col-xs-4 text-center' id="menu1"></div>
       <div class='col-sm-4 col-xs-4 text-center' id="menu2"></div>
-      <div class='col-sm-4 col-xs-4 text-center' id="menu3"></div>
+      <div class='col-sm-4 col-xs-4 text-center' id="menu3"></div> -->
     </div>
   </div>     
 </div>
@@ -38,11 +38,16 @@
  // $.getJSON( "config/data.json" )
  // .done(function( json ) {
    $("body").css("background", "url("+ json.home.backgroubdImage +")");
-   $('#home-contestent-img').html("<a href='vote.html'><img src="+ json.home.heroImage +"></a>");
-   $('#menu1').html("<a href='leaderboard.html'><img src="+ json.home.menu1 +"></a>");
-   $('#menu2').html("<a href='fan_adda.html'><img src="+ json.home.menu2 +"></a>");
-   $('#menu3').html("<a href='#'><img src="+ json.home.menu3 +"></a>");
+   $('#home-contestent-img').html("<a href='vote.html'><img src="+ decodeURI(json.home.heroImage) +" height='150px'></a>");
+   // $('#menu1').html("<a href='leaderboard.html'><img src="+ json.home.menu1 +"></a>");
+   // $('#menu2').html("<a href='fan_adda.html'><img src="+ json.home.menu2 +"></a>");
+   // $('#menu3').html("<a href='#'><img src="+ json.home.menu3 +"></a>");
    // voteEpisodeId = json.vote.voteEpisodeId;
+   // $('#bottom-menu').html("<div class='col-sm-4 col-xs-4 text-center'><a href='"+json.home.dynamic_menu.target_url+"'><img src="+ json.home.dynamic_menu.button_img_url +"></a></div>");
+   $('#bottom-menu').html(' ');
+   for (var i=0; i<json.home.dynamic_menu.length; i++){
+    $('#bottom-menu').append("<div class='col-sm-4 col-xs-4 text-center menu-buttons'><a href='"+json.home.dynamic_menu[i].target_url+"'><img src="+ decodeURI(json.home.dynamic_menu[i].button_img_url) +"></a></div>");
+   }
 
    /* Reset all sessions */
    var contestantsList = json.vote.contestants;
