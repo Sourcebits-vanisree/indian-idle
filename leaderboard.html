@@ -92,7 +92,7 @@ var output='<div class="row no-gutters pt-2"><div class="col-2 text-center posit
 // var output='<div class="items"><div class="leader-info"><span class="rank"><span>'+itemC+' </span><img src="'+result.profilePicUrl+'" class="leader-image" onerror="imgError(this);" width><span>'+result.socialUserName+' </span><span>'+result.totalRewardPoints+' pts</span></span></div></div>';
 $('#leaders').append(output);
 });
-if (lastPage != pagination) {
+if (lastPage != pagination && pagination > 1) {
 	$('#leaders:last-child').append("<div class='row border-bottom load-more no-gutters'><div class='col-12 pb-4 pt-1 text-center'><span onclick='nextRanks()'>Load More</span></div></div>");
 };
 }).fail(function(jqXHR) {

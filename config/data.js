@@ -12,7 +12,7 @@ var json;
  $.ajax({
  crossDomain: true,
  type: "GET",
- url: "http://s3.ap-south-1.amazonaws.com/devqa-emsdata/vote/config/votes-6.json",
+ url: "https://s3.ap-south-1.amazonaws.com/qa-ems-app-data/vote/config/votes-6.json?"+$.now(),
  contentType: 'application/json; charset=utf-8',
  dataType: 'json',
  async: false,

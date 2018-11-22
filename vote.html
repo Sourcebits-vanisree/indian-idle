@@ -25,7 +25,7 @@
   <div class="modal-dialog">
     <div class="modal-content modal-transparent">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <button type="button" id="closeBackBtn" class="close" data-dismiss="modal">&times;</button>
       </div>
       <div class="modal-body">
         <div class="row">
@@ -59,31 +59,36 @@
   // .done(function( json ) {
    /* Vote close */
    var localDT = new Date();
+   var localDT = new Date();
    var localTime = localDT.getTime();
    var serverTime = localStorage.getItem("serverTime");
    var serverTime = parseInt(serverTime);
    var serverDT = new Date(serverTime);
-   var startDT = new Date(json.vote.startTime);
-   var endDT = new Date(json.vote.endTime);
-   var startTime = startDT.getTime();
-   var endTime = endDT.getTime();
+   var startDT = (json.vote.startTime) * 1000;
+   var endDT = (json.vote.endTime) * 1000;
+   // var startTime = startDT.getTime();
+   // var endTime = endDT.getTime();
+   var startTime = parseInt((json.vote.startTime) * 1000);
+   var endTime = parseInt((json.vote.endTime) * 1000);
+   var startDT = new Date(startTime);
+   var endDT = new Date(endTime);
    var startDate = startDT.getFullYear()+'/'+startDT.getMonth()+'/'+startDT.getDate();
    var localDate = localDT.getFullYear()+'/'+localDT.getMonth()+'/'+localDT.getDate();
    var serverDate = serverDT.getFullYear()+'/'+serverDT.getMonth()+'/'+serverDT.getDate();
-
-   /* Compare with server time */
+console.log("localdate"+localDT);console.log("serverDT"+serverDT);console.log("startDT"+startDT);console.log("endDT"+endDT);
    var showTimeStatus = false;
    
    if (serverDate == localDate && localDate == startDate) {
     var timeDiff = (serverTime - localTime)/1000;/* in secs */
     if (startTime <= (localTime+timeDiff) && endTime >= (localTime+timeDiff)) {
-      // Close time for vote
       initializeClock('clockdiv', endTime,serverTime);
       showTimeStatus = true;
     }else{
       if(endTime >= (localTime+timeDiff)){
+        // console.log('beforeWaitingPage1');
         window.location.href= 'beforeWaitingPage.html';
       }else{
+        // console.log('afterWaitingPage1');
         window.location.href= 'afterWaitingPage.html';
       }
       
@@ -92,12 +97,17 @@
   }
   else{
     if(startTime > serverTime){
-       // window.location.href= 'beforeWaitingPage.html';
+      // console.log('beforeWaitingPage2');
+       window.location.href= 'beforeWaitingPage.html';
      }else{
-      // window.location.href= 'afterWaitingPage.html';
+      // console.log('afterWaitingPage2');
+      window.location.href= 'afterWaitingPage.html';
      }
   }
-
+  
+  // add date validation to open vote page
+  // var showTimeStatus = true;
+  if(showTimeStatus === true){
   json_data = json;
   maxVotes = json_data.vote.maxVotes;
   $("body").css("background", "url("+ json.vote.backgroubdImage +")");
@@ -115,11 +125,12 @@
   }
   voteText = json.vote.voteText;
   voteEpisodeId = json.vote.voteEpisodeId;
-
+}
 $(document).ready(function(){ 
   NumOfVotesLeft(false);
     //Voting confirmation popup
-    $(".container").on("click",'.contestants-img',function(){
+    $(".container").on("click",'.contestants-img',function(){ 
+      $('.backBtn').hide();
       var totalUserVotes = localStorage.getItem("totalUserVotes");
       if(maxVotes > parseInt(totalUserVotes)){
         var imgUrl = $(this).children('img').attr('src');
@@ -133,12 +144,16 @@ $(document).ready(function(){
       }
     });
     
+    $("#closeBackBtn").on("click",function(){
+      $('.backBtn').show();
+    })
   });
 
 function voteApiCall(contestantId)
 {
+   $('.backBtn').show();
     //Api call 
-    var contestantData = {"userProfileId" : localStorage.getItem("userId") ,
+    var contestantData = {"userProfileId" : parseInt(localStorage.getItem("userId")) ,
     "contestantId" : contestantId,
     "mobileTime" : Date.now(),
     "voteEpisodeId" : voteEpisodeId};
@@ -211,6 +226,7 @@ function voteApiCall(contestantId)
 
         if (t.total <= 0) {
           window.location.href= 'afterWaitingPage.html';
+          alert('clk');
         }
       }
 

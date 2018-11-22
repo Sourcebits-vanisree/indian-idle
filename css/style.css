@@ -5,7 +5,7 @@ body{
 	scroll-behavior: [ auto | smooth ];
 }
 #home-contestent-img{
-	    padding-top: 45%;
+	padding-top: 45%;
 }
 #home-contestent-img img{
 	width: 50%;
@@ -49,39 +49,39 @@ body{
 	font-size: 20px;
 	padding: 6px;
 	border-radius: 6px;
-	    width: 248px;
-	    margin-left: 8%;
+	width: 248px;
+	margin-left: 8%;
 }
 .vote-check{
 	padding: 11px;
 	background: rgba(0, 0, 0, 0.2);
 	color: #231818;
 	margin-left: -12%;
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
-    font-size: 33px;
+	border-top-left-radius: 6px;
+	border-bottom-left-radius: 6px;
+	font-size: 33px;
 }
 .vote-text{
 	margin: 0px 31px;
 }
 .contestant-votes{
 	background-color: #d62374;
-    padding: 4px 10px;
-    border-radius: 50px;
-    position: absolute;
-    left: 10px;
+	padding: 4px 10px;
+	border-radius: 50px;
+	position: absolute;
+	left: 10px;
 }
 .backBtn{
 	left: 12px;
-    position: absolute;
-    top: 14px;
-    z-index: 1;
+	position: absolute;
+	top: 8%;
+	z-index: 1111111;
 }
 .availableVotes{
 	color: yellow;
-    font-size: 30px;
-    letter-spacing: 2px;
-    font-weight: 500;
+	font-size: 30px;
+	letter-spacing: 2px;
+	font-weight: 500;
 }
 .votesClose{
 	color: red;
@@ -89,28 +89,28 @@ body{
 }
 /*Leaderboard*/
 .scroll-toprankers {
-    height: calc(100vh - 200px);
-    background-color: rgba(0, 0, 0, 0.2) !important;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    -webkit-overflow-scrolling:touch!important;
+	height: calc(100vh - 200px);
+	background-color: rgba(0, 0, 0, 0.2) !important;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	-webkit-overflow-scrolling:touch!important;
 }
 .leader-info .rank {
-    padding-left: 59px;
+	padding-left: 59px;
 
 }
 
 .leader-info img {
-    border-radius: 20px;
-    margin-right: 5px;
-    margin-left: 5px;
-    margin-top: 4px;
+	border-radius: 20px;
+	margin-right: 5px;
+	margin-left: 5px;
+	margin-top: 4px;
 }
 
 
 .leader-info .leader-image {
-    width: 40px;
-    height: 40px;
+	width: 40px;
+	height: 40px;
 }
 .font-color{
 	color: #f6fa00!important;
@@ -118,8 +118,12 @@ body{
 .verticle-center{
 	height:100px;  /* image height */
 	display: table-cell;
-    vertical-align: middle;
+	vertical-align: middle;
 }
 .menu-buttons img{
 	width:100%;
+}
+.modal-open {
+	overflow: hidden;
+	position: fixed;
 }
