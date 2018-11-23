@@ -41,8 +41,9 @@ body{
 #vote-to-contestant button {
 	color: #fff;
 	opacity: 1 !important;
-	font-size: 36px;
+	font-size: 40px;
 	float: left !important;
+	padding-top: 4%;
 }
 .vote-btn{
 	background-color:yellow;

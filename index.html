@@ -10,18 +10,17 @@
   <script src="bootstrap4/js/bootstrap.min.js"></script>
 </head>
 <body>
-
   <div class="container">
    <div class="row">
      <div class="col-12 text-center" id="home-contestent-img">
      </div>
      <div class="row" id="bottom-menu">
-    </div>
-  </div>     
-</div>
-<script src="js/config.js"></script>
-<script src="config/data.js"></script>
-<script>
+     </div>
+   </div>     
+ </div>
+ <script src="js/config.js"></script>
+ <script src="config/data.js"></script>
+ <script>
   // var voteEpisodeId = '';
   var totalUserVotes = 0;
   var userId = location.search.split('userID=').splice(1).join('').split('&')[0];
@@ -45,35 +44,37 @@
   for (var i=0; i<contestantsList.length; i++){
     sessionStorage.setItem("cid"+contestantsList[i].cid, 0);
   }
-var userData = {
-  "userId":  localStorage.getItem("userId"),
-  "voteEpisodeId": json.vote.voteEpisodeId
-}
+  var userData = {
+    "userId":  localStorage.getItem("userId"),
+    "voteEpisodeId": json.vote.voteEpisodeId
+  }
 
-$.ajax({
- crossDomain: true,
- type: "POST",
- url: api_url.votePerUserForContestants,
- data: JSON.stringify(userData),
- contentType: 'application/json; charset=utf-8',
- dataType: 'json',
- async: false,
- success: function (data) {
-  console.log(data);
-  
-  if(data.responseData){
-    var votersList = data.responseData.voteList;
-    var serverTime = data.responseData.serverTime
+  $.ajax({
+   crossDomain: true,
+   type: "POST",
+   url: api_url.votePerUserForContestants,
+   data: JSON.stringify(userData),
+   contentType: 'application/json; charset=utf-8',
+   dataType: 'json',
+   async: false,
+   success: function (data) {
+    console.log(data);
 
-    if(votersList && serverTime){
-     localStorage.setItem("serverTime",data.responseData.serverTime);
-     for(i=0;i<votersList.length;i++){
-      totalUserVotes += parseInt(votersList[i].votes);
-      sessionStorage.setItem("cid"+votersList[i].contestantId, votersList[i].votes);
+    if(data.responseData){
+      var votersList = data.responseData.voteList;
+      var serverTime = data.responseData.serverTime
+
+      if(serverTime){
+       localStorage.setItem("serverTime",data.responseData.serverTime);
+     }
+     if(votersList){
+       for(i=0;i<votersList.length;i++){
+        totalUserVotes += parseInt(votersList[i].votes);
+        sessionStorage.setItem("cid"+votersList[i].contestantId, votersList[i].votes);
+      }
     }
   }
-}
-localStorage.setItem("totalUserVotes",totalUserVotes);
+  localStorage.setItem("totalUserVotes",totalUserVotes);
 }
 })
 
