@@ -1,0 +1,2 @@
+
+var api_url = JSON.parse('{"voteForContestant" :"https://emsapi.sonyliv.com/api/v1/vote/voteForContestant","votePerUserForContestants" :"https://emssdk.sonyliv.com/api/v1/admin/votePerUserForContestants","top_Ranks" :"https://prd-emss3.sonyliv.com/leaderboard/prog-8/topranking/leader.json","get_Profile" :"https://prd-emss3.sonyliv.com/leaderboard/prog-8/profiledetails"}');

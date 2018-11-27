@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Home</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+</head>
+<body>
+
+  <div class="container">
+   <div class="row text-center">
+    <div class="backBtn"><a href="index.html"><img src="images/back.png"></a></div>
+  </div>     
+</div>
+<script src="config/data.js"></script>
+<script>
+  $("body").css("background", "url("+ json.afterWaitingPage.backgroundImage +")");
+
+
+  var waitingTill = setInterval(function(){ 
+    
+   var localDT = new Date();
+   var localTime = localDT.getTime();
+   var serverTime = localStorage.getItem("serverTime");
+   var serverTime = parseInt(serverTime);
+   var serverDT = new Date(serverTime);
+   var startDTObj = new Date(json.vote.startTime.replace(/-/g, "/"));
+   var startDT = startDTObj.getTime();
+   var endDTObj= new Date(json.vote.endTime.replace(/-/g, "/"));
+   var endDT = endDTObj.getTime();
+   var startTime = startDT;
+   var endTime = endDT;
+   var startDT = new Date(startTime);
+   var endDT = new Date(endTime);
+   var endDate = endDT.getFullYear()+'/'+ endDT.getMonth() +'/'+endDT.getDate();
+   var startDate = startDT.getFullYear()+'/'+ startDT.getMonth() +'/'+startDT.getDate();
+   var localDate = localDT.getFullYear()+'/'+localDT.getMonth()+'/'+localDT.getDate();
+   var serverDate = serverDT.getFullYear()+'/'+serverDT.getMonth()+'/'+serverDT.getDate();
+   console.log("localdate"+localDT);console.log("serverDT"+serverDT);console.log("startDT"+startDT);console.log("endDT"+endDT);
+   var showTimeStatus = false;
+   
+   // if (serverDate == localDate && localDate == startDate) {
+    if (serverDate == localDate && localDate >= startDate && localDate <= endDate ){
+    var timeDiff = (serverTime - localTime)/1000;/* in secs */
+    var timeDiffAbs =Math.abs(timeDiff);
+    var timeDiffSign = Math.sign(timeDiff);
+    if(timeDiffSign == 1){
+      var  correctLocalTime = localTime + timeDiffAbs;
+    }else{
+      var  correctLocalTime = localTime - timeDiffAbs;
+    }
+    if (startTime <= (correctLocalTime) && endTime >= (correctLocalTime)) {
+      clearInterval(waitingTill);
+      window.location.href= 'vote.html';
+      // initializeClock('clockdiv', endTime,serverTime);
+      // showTimeStatus = true;
+    }else{
+      if(endTime >= (localTime+timeDiff)){
+        window.location.href= 'beforeWaitingPage.html';
+      }else{
+        window.location.href= 'afterWaitingPage.html';
+      }
+      
+    }
+
+  }
+  else{
+    if(startTime > serverTime){
+     window.location.href= 'beforeWaitingPage.html';
+   }else{
+      // console.log('afterWaitingPage2');
+      window.location.href= 'afterWaitingPage.html';
+    }
+  }
+  }, 3000);
+</script>
+</body>
+</html>
