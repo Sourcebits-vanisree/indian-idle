@@ -31,6 +31,11 @@ body{
 	border-radius: 10px;
 	background: linear-gradient(to right, #f3cd4e 0%,#ffe4a0 50%,#ead165 100%);
 }
+#votesNotAvailable .modal-content{
+	border: 3px solid #f3cd4e;
+	border-radius: 10px;
+	background: linear-gradient(to right, #f3cd4e 0%,#ffe4a0 50%,#ead165 100%);
+}
 #vote-to-contestant button {
 	display: inline-block;
 	color: #ffffff;
