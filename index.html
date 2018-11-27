@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Home</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="bootstrap4/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/jquery.min.js"></script>
+  <script src="bootstrap4/js/bootstrap.min.js"></script>
+</head>
+<body>
+  <div class="container">
+   <div class="row">
+     <div class="col-12 text-center" id="home-contestent-img">
+     </div>
+     <div class="row" id="bottom-menu">
+     </div>
+   </div>     
+ </div>
+ <script>
+  var path = window.location.href;
+  var subStrIndex = path.indexOf('?');
+  var subStr = path.substr(subStrIndex + 1);
+  if(subStr.includes("?")){
+    var strData = subStr.split('?');
+    var episode = strData[0].split('=');
+    var episodeId = 'votes-'+ episode[1] +'.json';
+    localStorage.setItem('voteEpisodeId', episodeId);
+  }
+</script>
+<script src="js/config.js"></script>
+<script src="config/data.js"></script>
+<script>
+  var totalUserVotes = 0;
+  var userId = location.search.split('userID=').splice(1).join('').split('&')[0];
+  var FullName = location.search.split('FullName=').splice(1).join('').split('&')[0];
+  if (localStorage.getItem('userId') == "" || localStorage.getItem('userId')== "undefined" || localStorage.getItem('userId') == null) {
+   localStorage.removeItem('userId');
+   localStorage.setItem('userId', userId);
+ }
+
+ // $.getJSON( "config/data.json" )
+ // .done(function( json ) {
+   $("body").css("background", "url("+ json.home.backgroubdImage +")");
+   $('#home-contestent-img').html("<a href='vote.html'><img src="+ decodeURI(json.home.heroImage) +" height='150px'></a>");
+   $('#bottom-menu').html(' ');
+   for (var i=0; i<json.home.dynamic_menu.length; i++){
+    $('#bottom-menu').append("<div class='col-4 text-center menu-buttons'><a href='"+json.home.dynamic_menu[i].target_url+"'><img src="+ decodeURI(json.home.dynamic_menu[i].button_img_url) +"></a></div>");
+  }
+$('#bottom-menu').append("<div class='col-4 text-center menu-buttons'><a href='termsAndConditions.html'><img src='images/tc.png'></a></div>");
+  /* Reset all sessions */
+  var contestantsList = json.vote.contestants;
+  for (var i=0; i<contestantsList.length; i++){
+    sessionStorage.setItem("cid"+contestantsList[i].cid, 0);
+  }
+  var userData = {
+    "userId":  localStorage.getItem("userId"),
+    "voteEpisodeId": json.vote.voteEpisodeId
+  }
+
+  $.ajax({
+   crossDomain: true,
+   type: "POST",
+   url: api_url.votePerUserForContestants,
+   data: JSON.stringify(userData),
+   contentType: 'application/json; charset=utf-8',
+   dataType: 'json',
+   async: false,
+   success: function (data) {
+    console.log(data);
+
+    if(data.responseData){
+      var votersList = data.responseData.voteList;
+      var serverTime = data.responseData.serverTime
+
+      if(serverTime){
+       localStorage.setItem("serverTime",data.responseData.serverTime);
+     }
+     if(votersList){
+       for(i=0;i<votersList.length;i++){
+        totalUserVotes += parseInt(votersList[i].votes);
+        sessionStorage.setItem("cid"+votersList[i].contestantId, votersList[i].votes);
+      }
+    }
+  }
+  localStorage.setItem("totalUserVotes",totalUserVotes);
+}
+})
+
+</script>
+</body>
+</html>

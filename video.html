@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Home</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="bootstrap4/css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/style.css">
+	<script src="js/jquery.min.js"></script>
+	<script src="bootstrap4/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-12 text-center" id="trending-videos1"></div>
+			<div class="col-12 text-center">
+				<p> title will goes here </p>
+			<video width="320" height="240" poster="https://s3.ap-south-1.amazonaws.com/qa-ems-app-data/sampledata/Home_BackGround.png" controls muted>
+				<source src="https://devqa-emsdata.s3.ap-south-1.amazonaws.com/sony-2/prog-4/VID-20181004-WA0000.mp4" type="video/mp4"> Your browser does not support the video tag.
+				<source src="https://s3.ap-south-1.amazonaws.com/qa-ems-app-data/sampledata/Home_BackGround.png" type="image">
+			</video>
+		</div>
+		</div>     
+	</div>
+	<script src="config/data.js"></script>
+	<script>
+	var jsonData = json;
+	var trendingVideos = jsonData.home.trendingVideos;
+	for(i=0;i<trendingVideos.length;i++){debugger;
+		$('#trending-videos').append('<video width="320" height="240" poster="'+ trendingVideos[i].image +'" controls muted><source src="'+ trendingVideos[i].video +'" type="video/mp4"> Your browser does not support the video tag.</video>');
+	}
+		// $("#trending-videos").html('<iframe src="https://devqa-emsdata.s3.ap-south-1.amazonaws.com/sony-2/prog-4/VID-20181004-WA0000.mp4?rel=0&cc_load_policy=1" id="ques_video" playsinline frameborder="0"></iframe>');
+  //           ques_type = document.getElementById("ques_video");
+            // ques_type.src = "https://devqa-emsdata.s3.ap-south-1.amazonaws.com/sony-2/prog-4/VID-20181004-WA0000.mp4";
+            // ques_type.type = "video/" + resrc.slice(resrc.lastIndexOf("."));
+            // document.getElementById("ques_video").controls = true;
+            // ques_type.autoplay = false;
+            // $("#audio,#image").css('display', 'none');
+            // $("#video").css('display', 'block');
+    </script>
+</body>
+</html>
